@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles</title>
+
+    <link rel="stylesheet" href="http://fabiandesmet.com/portfolio/butler-font/butler.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #111;
+            color: #E6E6E6;
+            font-family: 'Butler_Light', 'Segoe UI';
+        }
+
+        header {
+            background: #def9f8;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px 0 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: #def9f8;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 80px 40px 20px 40px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav.active {
+            right: 0;
+        }
+
+        nav a {
+            color: #000;
+            text-decoration: none;
+            padding: 12px 0;
+            width: 100%;
+            font-size: 16px;
+            transition: color 0.2s;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        nav a:hover {
+            color: #62CFB1;
+        }
+
+        nav a:last-child {
+            border-bottom: none;
+        }
+
+        /* Overlay when sidebar is open */
+        body.sidebar-open {
+            overflow: hidden;
+        }
+
+        body.sidebar-open::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 1001;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #000;
+            transition: 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        .hamburger:hover span {
+            background: #62CFB1;
+        }
+
+        .articles-hero {
+            background: linear-gradient(135deg, #326B82, #306F81);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .articles-hero h1 {
+            color: #62CFB1;
+            font-size: 42px;
+        }
+
+        .articles-container {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .article-card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .article-content {
+            padding: 25px;
+        }
+
+        .article-content h2 {
+            color: #62CFB1;
+        }
+
+        .article-content p {
+            color: #ccc;
+        }
+
+        .article-content a {
+            color: #5CC8AB;
+            text-decoration: none;
+        }
+
+        .single-article {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .single-article img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .single-article h1 {
+            color: #62CFB1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html">
+            <img src="Assests/logo1.png" alt="Logo" style="height: 150px; width: auto;">
+        </a>
+        <nav id="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="index.html#portfolio">Portfolio</a>
+            <a href="articles.html">Articles</a>
+            <a href="index.html#about">About</a>
+        </nav>
+        <button class="hamburger" id="hamburger-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <section class="articles-hero">
+        <h1>Articles & Insights</h1>
+        <p>Photography tips and stories</p>
+    </section>
+
+    <section class="articles-container">
+
+        <div id="articles-list" class="articles-grid"></div>
+
+        <div id="single-article" class="single-article" style="display:none;">
+            <h1 id="single-title"></h1>
+            <p id="single-date"></p>
+            <img id="single-image">
+            <div id="single-content"></div>
+        </div>
+
+    </section>
+
+    <script>
+
+        // Hamburger menu toggle
+        const hamburgerBtn = document.getElementById("hamburger-btn");
+        const navMenu = document.getElementById("nav-menu");
+        const body = document.body;
+
+        hamburgerBtn.addEventListener("click", () => {
+            hamburgerBtn.classList.toggle("active");
+            navMenu.classList.toggle("active");
+            body.classList.toggle("sidebar-open");
+        });
+
+        // Close menu when a link is clicked
+        navMenu.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                hamburgerBtn.classList.remove("active");
+                navMenu.classList.remove("active");
+                body.classList.remove("sidebar-open");
+            });
+        });
+
+        // Close sidebar when clicking outside (on overlay)
+        body.addEventListener("click", (e) => {
+            if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target) && navMenu.classList.contains("active")) {
+                hamburgerBtn.classList.remove("active");
+                navMenu.classList.remove("active");
+                body.classList.remove("sidebar-open");
+            }
+        });
+
+        const API = "http://localhost:1337";
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get("slug");
+        if (slug) {
+            document.querySelector(".articles-hero").style.display = "none";
+        }
+
+
+        fetch(`${API}/api/articles?populate=thumbnail`)
+            .then(res => res.json())
+            .then(res => {
+
+                const articles = res.data;
+
+                // SINGLE ARTICLE PAGE
+                if (slug) {
+                    const article = articles.find(a => a.slug === slug);
+                    if (!article) return;
+
+                    document.getElementById("articles-list").style.display = "none";
+                    document.getElementById("single-article").style.display = "block";
+
+                    document.getElementById("single-title").innerText = article.title;
+                    document.getElementById("single-date").innerText = article.publishedDate || "";
+                    document.getElementById("single-image").src = API + article.thumbnail.url;
+                    document.getElementById("single-content").innerHTML = article.content || "";
+
+
+                    return;
+                }
+
+                // ARTICLE LIST PAGE
+                const grid = document.getElementById("articles-list");
+
+                articles.forEach(a => {
+                    grid.innerHTML += `
+                    <div class="article-card">
+                        <img src="${API}${a.thumbnail.url}">
+                        <div class="article-content">
+                        <h2>${a.title}</h2>
+                        <p>${a.excerpt || ""}</p>
+                        <a href="articles.html?slug=${a.slug}">Read More →</a>
+                        </div>
+                    </div>
+                    `;
+                });
+
+            });
+
+    </script>
+
+</body>
+
+</html>
