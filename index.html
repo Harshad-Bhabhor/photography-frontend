@@ -1069,9 +1069,9 @@
                 document.getElementById("about-p1").innerHTML = p1;
 
                 // Image (array)
-                if (about.image.length > 0) {
+                if (about.image) {
                     document.querySelector(".about-image").src =
-                        "http://localhost:1337" + about.image[0].url;
+                        "https://photography-backend-1.onrender.com" + about.image[0].url;
                 }
             })
             .catch(err => console.error("About error:", err));
@@ -1093,26 +1093,15 @@
 
                     // Safe image
                     let img = "";
-                    if (a.thumbnail && Array.isArray(a.thumbnail) && a.thumbnail.length > 0) {
-                        img = "http://localhost:1337" + a.thumbnail[0].url;
-                    } else if (a.thumbnail && a.thumbnail.url) {
-                        img = "http://localhost:1337" + a.thumbnail.url;
-                    } else {
-                        img = "https://via.placeholder.com/400x200?text=No+Image";
+                    if (a.thumbnail) {
+                        img = "https://photography-backend-1.onrender.com" + a.thumbnail.url;
                     }
+
 
 
                     // Safe rich text
-                    let text = "";
-                    if (a.content && Array.isArray(a.content)) {
-                        a.content.forEach(block => {
-                            if (block.children) {
-                                block.children.forEach(child => {
-                                    if (child.text) text += child.text;
-                                });
-                            }
-                        });
-                    }
+                    let text = a.content || "";
+
 
                     grid.innerHTML += `
         <div class="article-card">
