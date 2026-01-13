@@ -1021,7 +1021,7 @@
             });
 
         /* ================= PORTFOLIO ================= */
-        fetch(`${API}/api/portfolio-items?populate=image,category`)
+        fetch(`${API}/api/portfolio-items?populate=*`)
             .then(r => r.json())
             .then(res => {
                 const grid = document.getElementById("portfolio-grid");
