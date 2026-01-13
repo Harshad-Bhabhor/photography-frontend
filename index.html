@@ -1001,139 +1001,86 @@
         updateActiveNav();
 
 
-        // Hero Section Content
+        const API = "https://photography-backend-1.onrender.com";
 
-        fetch("https://photography-backend-1.onrender.com/api/homepage")
-            .then(res => res.json())
+        /* ================= HERO ================= */
+        fetch(`${API}/api/homepage`)
+            .then(r => r.json())
             .then(res => {
-                const hero = res.data;
-
-                document.getElementById("hero-title").innerHTML =
-                    hero.heroTitle.replace(/\n/g, "<br>");
-
-                document.getElementById("hero-subtitle").innerText =
-                    hero.heroSubtitle;
-
+                const h = res.data;
+                document.getElementById("hero-title").innerHTML = h.heroTitle.replace(/\n/g, "<br>");
+                document.getElementById("hero-subtitle").innerText = h.heroSubtitle;
                 const btn = document.getElementById("hero-button");
-                btn.innerText = hero.heroButtonText;
-                btn.href = hero.heroButtonLink;
-            })
-            .catch(err => console.error("Hero fetch error:", err));
+                btn.innerText = h.heroButtonText;
+                btn.href = h.heroButtonLink;
+            });
 
 
-        // portfolio section
-        fetch("https://photography-backend-1.onrender.com/api/portfolio-items?populate=*")
-            .then(res => res.json())
+        /* ================= PORTFOLIO ================= */
+        fetch(`${API}/api/portfolio-items?populate=image,category`)
+            .then(r => r.json())
             .then(res => {
                 const grid = document.getElementById("portfolio-grid");
                 grid.innerHTML = "";
-
-                res.data.forEach(item => {
-                    const title = item.title;
-                    const img = "http://localhost:1337" + item.image.url;
-
+                res.data.forEach(p => {
                     grid.innerHTML += `
         <div class="image-card">
-          <img src="${img}" class="image-card-img">
+          <img src="${API}${p.image.url}" class="image-card-img">
           <div class="image-card-overlay">
-            <div class="image-card-title">${title}</div>
-            <div class="image-card-category">Photo</div>
+            <div class="image-card-title">${p.title}</div>
+            <div class="image-card-category">${p.category?.name || ""}</div>
           </div>
         </div>
       `;
                 });
-            })
-            .catch(err => console.error("Portfolio error:", err));
+            });
 
 
-
-
-        // About Section Content 
-        fetch("https://photography-backend-1.onrender.com/api/about?populate=*")
-            .then(res => res.json())
+        /* ================= ABOUT ================= */
+        fetch(`${API}/api/about?populate=image`)
+            .then(r => r.json())
             .then(res => {
-                const about = res.data;
-
-                // Title
-                document.getElementById("about-title").innerText = about.title;
-
-                // Paragraph 1 (Strapi v5 rich text array)
-                let p1 = "";
-                about.paragraph1.forEach(block => {
-                    block.children.forEach(child => {
-                        p1 += child.text;
-                    });
-                    p1 += "<br><br>";
-                });
-
-                document.getElementById("about-p1").innerHTML = p1;
-
-                // Image (array)
-                if (about.image) {
-                    document.querySelector(".about-image").src =
-                        "https://photography-backend-1.onrender.com" + about.image[0].url;
+                const a = res.data;
+                document.getElementById("about-title").innerText = a.title;
+                document.getElementById("about-p1").innerHTML = a.paragraph1 || "";
+                document.getElementById("about-p2").innerHTML = a.paragraph2 || "";
+                document.getElementById("about-p3").innerHTML = a.paragraph3 || "";
+                if (a.image) {
+                    document.getElementById("about-image").src = API + a.image.url;
                 }
-            })
-            .catch(err => console.error("About error:", err));
+            });
 
 
-
-
-
-        // articles section content
-        fetch("https://photography-backend-1.onrender.com/api/articles?populate=*")
-            .then(res => res.json())
+        /* ================= ARTICLES ================= */
+        fetch(`${API}/api/articles?populate=thumbnail`)
+            .then(r => r.json())
             .then(res => {
                 const grid = document.getElementById("articles-grid");
                 grid.innerHTML = "";
-
                 res.data.forEach(a => {
-                    const title = a.title || "Untitled";
-                    const slug = a.slug || "#";
-
-                    // Safe image
-                    let img = "";
-                    if (a.thumbnail) {
-                        img = "https://photography-backend-1.onrender.com" + a.thumbnail.url;
-                    }
-
-
-
-                    // Safe rich text
-                    let text = a.content || "";
-
-
                     grid.innerHTML += `
-        <div class="article-card">
-          <img src="${img}" class="article-thumbnail">
-          <div class="article-content">
-            <h3>${title}</h3>
-            <p class="article-excerpt">${text}</p>
-            <a href="articles.html?slug=${slug}" class="article-read-more">
-              Read More →
-            </a>
-          </div>
+      <div class="article-card">
+        <img src="${API}${a.thumbnail.url}" class="article-thumbnail">
+        <div class="article-content">
+          <h3>${a.title}</h3>
+          <p class="article-excerpt">${a.excerpt || ""}</p>
+          <a href="articles.html?slug=${a.slug}" class="article-read-more">Read More →</a>
         </div>
-      `;
+      </div>
+    `;
                 });
-            })
-            .catch(err => console.error("Articles error:", err));
+            });
 
 
-
-
-
-        // Footer Content 
-        fetch("https://photography-backend-1.onrender.com/api/site-setting")
-            .then(res => res.json())
+        /* ================= FOOTER ================= */
+        fetch(`${API}/api/site-setting`)
+            .then(r => r.json())
             .then(res => {
                 const s = res.data;
-
                 document.getElementById("footer-brand").innerText = s.footerBrandName;
                 document.getElementById("footer-email").innerText = s.footerEmail;
                 document.getElementById("footer-instagram").href = s.instagram;
-            })
-            .catch(err => console.error("Footer error:", err));
+            });
 
     </script>
 </body>
