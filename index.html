@@ -1003,6 +1003,11 @@
 
         const API = "https://photography-backend-1.onrender.com";
 
+        function fixUrl(url) {
+            if (!url) return "";
+            return url.startsWith("http") ? url : API + url;
+        }
+
         /* ================= HERO ================= */
         fetch(`${API}/api/homepage`)
             .then(r => r.json())
@@ -1015,7 +1020,6 @@
                 btn.href = h.heroButtonLink;
             });
 
-
         /* ================= PORTFOLIO ================= */
         fetch(`${API}/api/portfolio-items?populate=image,category`)
             .then(r => r.json())
@@ -1023,9 +1027,10 @@
                 const grid = document.getElementById("portfolio-grid");
                 grid.innerHTML = "";
                 res.data.forEach(p => {
+                    const img = p.image ? fixUrl(p.image.url) : "";
                     grid.innerHTML += `
         <div class="image-card">
-          <img src="${API}${p.image.url}" class="image-card-img">
+          <img src="${img}" class="image-card-img">
           <div class="image-card-overlay">
             <div class="image-card-title">${p.title}</div>
             <div class="image-card-category">${p.category?.name || ""}</div>
@@ -1034,7 +1039,6 @@
       `;
                 });
             });
-
 
         /* ================= ABOUT ================= */
         fetch(`${API}/api/about?populate=image`)
@@ -1046,10 +1050,9 @@
                 document.getElementById("about-p2").innerHTML = a.paragraph2 || "";
                 document.getElementById("about-p3").innerHTML = a.paragraph3 || "";
                 if (a.image) {
-                    document.getElementById("about-image").src = API + a.image.url;
+                    document.getElementById("about-image").src = fixUrl(a.image.url);
                 }
             });
-
 
         /* ================= ARTICLES ================= */
         fetch(`${API}/api/articles?populate=thumbnail`)
@@ -1058,19 +1061,19 @@
                 const grid = document.getElementById("articles-grid");
                 grid.innerHTML = "";
                 res.data.forEach(a => {
+                    const img = a.thumbnail ? fixUrl(a.thumbnail.url) : "";
                     grid.innerHTML += `
-      <div class="article-card">
-        <img src="${API}${a.thumbnail.url}" class="article-thumbnail">
-        <div class="article-content">
-          <h3>${a.title}</h3>
-          <p class="article-excerpt">${a.excerpt || ""}</p>
-          <a href="articles.html?slug=${a.slug}" class="article-read-more">Read More →</a>
+        <div class="article-card">
+          <img src="${img}" class="article-thumbnail">
+          <div class="article-content">
+            <h3>${a.title}</h3>
+            <p class="article-excerpt">${a.excerpt || ""}</p>
+            <a href="articles.html?slug=${a.slug}" class="article-read-more">Read More →</a>
+          </div>
         </div>
-      </div>
-    `;
+      `;
                 });
             });
-
 
         /* ================= FOOTER ================= */
         fetch(`${API}/api/site-setting`)
