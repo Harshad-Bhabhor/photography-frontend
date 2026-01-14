@@ -40,9 +40,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 11px 10px 0 0;
+            padding: 0 10px;
             border-bottom: 1px solid #306F81;
             z-index: 1000;
+            overflow: hidden;
         }
 
         .logo {
@@ -50,6 +51,9 @@
             font-weight: bold;
             /* color: #62CFB1; */
             text-decoration: none;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
         }
 
         /* Hamburger Menu Toggle */
@@ -60,12 +64,16 @@
             gap: 5px;
             z-index: 1001;
             margin-left: auto;
-            padding: 10px;
+            padding: 8px;
+            flex-shrink: 0;
+            background: none;
+            border: none;
         }
 
         .hamburger span {
             width: 25px;
             height: 3px;
+            margin-right: 5px;
             background-color: #000000;
             transition: all 0.3s ease;
         }
@@ -106,14 +114,15 @@
             align-items: center;
             position: relative;
             width: auto;
+            flex-shrink: 0;
         }
 
         nav ul {
             position: fixed;
             top: 70px;
-            right: -350px;
+            right: -300px;
             height: calc(100vh - 70px);
-            width: min(80vw, 300px);
+            width: 280px;
             background: #fff;
             list-style: none;
             padding: 30px 0;
@@ -611,6 +620,10 @@
                 height: 70px;
                 padding: 0 15px;
                 justify-content: space-between;
+            }
+
+            nav {
+                margin-right: 90px;
             }
 
             .logo {
