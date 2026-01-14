@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="https://fabiandesmet.com/portfolio/butler-font/butler.css">
 
     <style>
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+
         body {
             margin: 0;
             background: #111;
@@ -29,7 +41,7 @@
             position: fixed;
             top: 0;
             right: -100%;
-            width: 300px;
+            width: min(80vw, 300px);
             height: 100vh;
             background: #def9f8;
             padding: 80px 40px;
